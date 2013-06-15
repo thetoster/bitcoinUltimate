@@ -1,0 +1,123 @@
+Dinners:
+{"login":{"username":"toster","password":"blabla","lid":1}}
+{"enterRealm":{"realmName":"BitcoinUltimate"}}
+
+In:
+{"addAccount":{"type":"MTGOX", "apiKey":"", "apiSecret":""}}
+{"addAccount":{"type":"BITCUREX", "apiKey":"", "apiSecret":""}}
+Out:
+{"addAccount":{"result":"ok","accountId":"..."}}
+
+In:
+{"addBot":{"accountId":"..."}}
+Out:
+{"addBot":{"result":"ok","botId":"..."}}
+
+In:
+{"delBot":{"accountId":"...", "botId":"..."}}
+Out:
+{"delBot":{"result":"ok","botId":"..."}}
+
+In:
+{"setBot":{"accountId":"..","botId":"...","PLNChange":"+/-...", "BTCChange":"+/-..", "enabled":0/1, "workPlan":".."}}
+Out:
+{"setBot":{"botId":"...","PLN":"...", "BTC":"..", "enabled":0/1, "WorkPlan":".."}}
+PLN/BTC - aktualne wartosi dla tych dwoch zmiennych
+
+In:
+{"accountState":{"accountId":".."}}
+Out:
+dane zebrane ze wszystkich botow (jako suma)
+{"accountState":{
+    "accountId":"..", 
+    "type":"BITCUREX/MTGOX",
+    "totalSoldPLN":"..",
+    "totalSoldBTC":"..",
+    "totalBougthPLN":"..",
+    "totalBougthBTC":"..",
+    "operationsCount":"..",
+    "currentPLN":"..",
+    "currentBTC":"..",
+    "bots": ["botId",...],
+    "enabledBots": ["botId",...]
+}
+
+In:
+{"botState":{"accountId":"...", "botId":".."}}
+Out:
+dane zebrane ze wszystkich botow (jako suma)
+{"accountState":{
+    "accountId":"..", 
+    "type":"BITCUREX/MTGOX",
+    "enabled":0/1,
+    "workPlan":"...",
+    "botId":"..",
+    "totalSoldPLN":"..",
+    "totalSoldBTC":"..",
+    "totalBougthPLN":"..",
+    "totalBougthBTC":"..",
+    "operationsCount":"..",
+    "currentPLN":"..",
+    "currentBTC":"..",
+}
+
+IN:
+{"addLogicItem":{"accountId":"..", "type":"cond/calc/pred/order/store/set/exec","data":{ni¿ej}}
+struktury data w zaleznosci od typu itema:
+cond:
+  "id":"unikalny identyfikator tego elementu"
+  "nextId":"identyfikator kolejnego elementu do wykonania" pomin to pole jesli ma byc koniec wykonania
+  "var1":"nazwa zmiennej"
+  "var2":"nazwa zmiennej" (mo¿na pomin¹æ to pole i ustawiæ value)
+  "value":"wartosc zmiennej" (mo¿na pomin¹æ to pole ustawiaj¹ca var2)
+  "onFailId":"id itemu gdy warunek nie jest spelniony"
+  "type":"==, !=, <, <=, >, >=" - typ porownania var1 do var2 lub value
+  
+calc:
+  "id":"unikalny identyfikator tego elementu"
+  "nextId":"identyfikator kolejnego elementu do wykonania" pomin to pole jesli ma byc koniec wykonania
+  "equation":"dowolne równanie"
+  "resultVar":"nazwa zmiennej do zapisania wyniku"
+
+pred:
+  "id":"unikalny identyfikator tego elementu"
+  "nextId":"identyfikator kolejnego elementu do wykonania" pomin to pole jesli ma byc koniec wykonania
+  "topLimiter":"nazwaz zmiennej" (predykcja zostanie ograniczona od góry wartoœci¹ tej zmiennej)
+  "bottomLimiter":"nazwaz zmiennej" (predykcja zostanie ograniczona od do³u wartoœci¹ tej zmiennej)
+  "depth":"nazwaz zmiennej" (ile ostatnich stanów rynku ma byæ u¿ytych w predykcji?"
+  "resultVar":"nazwa zmiennej do zapisania wyniku"
+  "type":"LINEAR" - typ predykcji
+  
+order:
+  "id":"unikalny identyfikator tego elementu"
+  "nextId":"identyfikator kolejnego elementu do wykonania" pomin to pole jesli ma byc koniec wykonania
+  "type":"SELL_BTC/BUY_BTC/CANCEL" typ operacji
+  "amountVar":"nazwaz zmiennej" (ile sprzedaæ/kupiæ jednostek BC)
+  "priceVar":"nazwaz zmiennej" (jakiej oczekujemy ceny za jednostke BC)
+  "orderVar":"nazwa zmiennej" (w niej bêdzie zapisany orderID, lub z niej bêdzie pobrana wartoœc dla CANCEL)
+  
+store:
+  "id":"unikalny identyfikator tego elementu"
+  "nextId":"identyfikator kolejnego elementu do wykonania" pomin to pole jesli ma byc koniec wykonania
+  "storeValues":0/1 (0 - odczyt zachowanych wartoœci, 1- zapis stanu logiki)
+
+set:
+  "id":"unikalny identyfikator tego elementu"
+  "nextId":"identyfikator kolejnego elementu do wykonania" pomin to pole jesli ma byc koniec wykonania
+  "dowolna nazwa zmiennej":"dowolna wartoœæ zmiennej"
+
+exec:
+  "id":"unikalny identyfikator tego elementu"
+  "nextId":"identyfikator kolejnego elementu do wykonania" pomin to pole jesli ma byc koniec wykonania
+  "object":"nazwa obiektu" - siega do jednego ze zdefiniowanych obiektow pomocniczych (oredrAnalizer/Predictor)
+  "params":["nazwa zmiennej"..] - w zmiennej powinien byæ parametr do wywo³ywanej funkcji na obiekcie
+  "method":"nazwa metody" - nazwa metody do wykonania
+  "resultVar":"nazwa metody" - tutaj zostanie zapisany wynik metody
+  
+In:
+{"getLogicItems":{"accountId":"..."}}
+Out:
+{"getLogicItems":{"accountId":"...", "items":[".."]}}
+
+In:
+{"delLogicItems":{"accountId":"...", "id":"..."}}

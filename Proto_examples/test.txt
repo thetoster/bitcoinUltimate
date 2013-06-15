@@ -1,0 +1,38 @@
+{"login":{"username":"toster","password":"test123","lid":1}}
+{"enterRealm":{"realmName":"BitcoinUltimate"}}
+{"addAccount":{"type":"MTGOX", "apiKey":"1dfe9532-3014-4409-b1d6-7e272c1040ce", "apiSecret":"GmLjIhn9B1dEklurM+usyZjJKXrN0abK1Z6kl+Vmo4gODw3ymCBDhvMgK39fmSvjQ3sUIofrgWBKdbkNAwXJfA=="}}
+{"addBot":{"accountId":"gwfh2u"}}
+
+{"setBot":{"accountId":"gwfh2u","botId":"gwfh2u.ode376","workPlan":"b0-1","enabled":"1","PLNChange":0}}
+
+{"addLogicItem":{"accountId":"gwfh2u", "type":"store","data":{"id":"b0-1","storeValues":0,"nextId":"b0-2"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"cond","data":{"id":"b0-2","var1":"orderId","value":"NULL","type":"==","nextId":"b0-11","onFailId":"b0-3"}}}
+
+{"addLogicItem":{"accountId":"gwfh2u", "type":"calc","data":{"id":"b0-5","equation":"marketAvgW-marketLow","resultVar":"spread","nextId":"b0-6"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"calc","data":{"id":"b0-6","equation":"marketLow+spread/4","resultVar":"buyPrice","nextId":"b0-7"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"calc","data":{"id":"b0-7","equation":"curPLN/buyPrice","resultVar":"btcAmount","nextId":"b0-8"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"cond","data":{"id":"b0-8","var1":"btcAmount","value":"0.05","type":"<","onFailId":"b0-9"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"order","data":{"id":"b0-9","type":"BUY_BTC","amountVar":"btcAmount","priceVar":"buyPrice","orderVar":"orderId","nextId":"b0-10"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"store","data":{"id":"b0-10","storeValues":1}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"cond","data":{"id":"b0-11","var1":"curPLN","value":"0","type":"==","nextId":"b0-12","onFailId":"b0-5"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"cond","data":{"id":"b0-12","var1":"curBTC","value":"0","type":"==","onFailId":"b0-13"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"calc","data":{"id":"b0-13","equation":"buyPrice*1.02","resultVar":"sellPrice","nextId":"b0-14"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"cond","data":{"id":"b0-14","var1":"marketAvgW","var2":"sellPrice","type":">","onFailId":"b0-15", "nextId":"b0-16"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"order","data":{"id":"b0-15","type":"SELL_BTC","amountVar":"curBTC","priceVar":"sellPrice","orderVar":"orderId","nextId":"b0-10"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"calc","data":{"id":"b0-16","equation":"marketAvgW","resultVar":"sellPrice","nextId":"b0-15"}}}
+
+
+{"addLogicItem":{"accountId":"gwfh2u", "type":"exec","data":{"id":"b0-3","object":"orderAnalizer","method":"isOrderOpen","resultVar":"lastOrderOpen","params":["orderId"],"nextId":"b0-3w"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"cond","data":{"id":"b0-3w","var1":"lastOrderOpen","value":"1","type":"==","onFailId":"b0-4"}}}
+
+{"addLogicItem":{"accountId":"gwfh2u", "type":"exec","data":{"id":"b0-4","object":"orderAnalizer","method":"isOrderTypeBuy","resultVar":"lastOrderWasBuy","params":["orderId"],"nextId":"b0-4w"}}}
+{"addLogicItem":{"accountId":"gwfh2u", "type":"cond","data":{"id":"b0-4w","var1":"lastOrderWasBuy","value":"1","type":"==","onFailId":"b0-5","nextId":"b0-13"}}}
+
+
+AccountId: gwfh2u
+bot 0: gwfh2u.ode376
+
+{"accountState":{"accountId":"gwfh2u"}}
+{"getLogicItems":{"accountId":"gwfh2u"}}
+
+{"delLogicItem":{"accountId":"gwfh2u", "id":"b0-5"}}
