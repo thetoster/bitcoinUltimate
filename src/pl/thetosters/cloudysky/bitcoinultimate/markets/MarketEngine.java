@@ -172,7 +172,14 @@ public class MarketEngine {
             MarketStateEntity mse = m.get( acc.getType() );
             if (mse == null) {
                 //obtain new
-                mse = acc.getMarketApi().getTicker();
+                try{
+                    mse = acc.getMarketApi().getTicker();
+                } catch (Exception e){
+                    //Something wrong with API, skip this iteration
+                    masterHub.getLogicLogger().info("Can't access market api " 
+                                    + acc.getType());
+                    continue;
+                }
                 if (mse != null){
                     m.put(acc.getType(), mse);
                     masterHub.getEntityFactory().storeEntity(mse, false);

@@ -63,6 +63,13 @@ public abstract class LogicItem {
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
+    protected void addLog(String s, Map<String, Object> params){
+	    List<String> log = (List<String>)params.get("log");
+	    if (log != null){
+	        log.add(id + ": " + s);
+	    }
+	}
     /**
      * @param params
      */

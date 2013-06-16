@@ -42,6 +42,7 @@ public class LogicItemSetter extends LogicItem{
     @Override
     public LogicItem execute(Map<String, Object> params) {
         params.putAll(toSet);
+        addLog("[SET] " + toSet, params);
         return onNextItem;
     }
 

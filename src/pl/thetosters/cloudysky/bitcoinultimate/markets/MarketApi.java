@@ -22,18 +22,18 @@ import pl.thetosters.cloudysky.bitcoinultimate.entities.MarketStateEntity;
  */
 public interface MarketApi {
 
-    public abstract AccountStateEntity getFounds();
+    public abstract AccountStateEntity getFounds() throws Exception;
 
-    public abstract MarketStateEntity getTicker();
+    public abstract MarketStateEntity getTicker() throws Exception;
 
-    public abstract List<MarketOrderEntity> getOrderBook();
+    public abstract List<MarketOrderEntity> getOrderBook() throws Exception;
 
-    public abstract List<MarketOrderEntity> getOrders();
+    public abstract List<MarketOrderEntity> getOrders() throws Exception;
 
-    public abstract String buyBTC(double amount, double price);
+    public abstract String buyBTC(double amount, double price) throws Exception;
 
-    public abstract String sellBTC(double amount, double price);
+    public abstract String sellBTC(double amount, double price) throws Exception;
 
-    public abstract boolean cancelOrder(String oid, String type);
+    public abstract boolean cancelOrder(String oid, String type) throws Exception;
 
 }

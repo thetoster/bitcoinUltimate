@@ -78,13 +78,18 @@ public class LogicItemExecOrder extends LogicItem {
             case BUY_BTC:
                 order = reqExec.addBuyTransaction(price, amount);
                 params.put(orderVar, order);
+                addLog("[ORDER] buy BTC amount:" + amount + " by price:" + price 
+                                + " orderId(" + orderVar + ")=" + order, params);
                 break;
             case SELL_BTC:
                 order = reqExec.addSellTransaction(price, amount);
                 params.put(orderVar, order);
+                addLog("[ORDER] sell BTC amount:" + amount + " by price:" + price 
+                                + " orderId(" + orderVar + ")=" + order, params);
                 break;
             case CANCEL:
                 reqExec.cancelOrder(order);
+                addLog("[ORDER] cancel orderId(" + orderVar + ")=" + order, params);
                 break;
             default:
                 break;

@@ -1,11 +1,13 @@
 package pl.thetosters.cloudysky.bitcoinultimate.logic;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import pl.thetosters.cloudysky.bitcoinultimate.entities.AccountEntity;
+import pl.thetosters.cloudysky.bitcoinultimate.entities.LogLogicEntity;
 import pl.thetosters.cloudysky.bitcoinultimate.logic.items.LogicItem;
 import pl.thetosters.cloudysky.bitcoinultimate.logic.items.LogicItemsProvider;
 import pl.thetosters.cloudysky.bitcoinultimate.markets.MarketApi;
@@ -201,6 +203,7 @@ public class Account implements LogicItemsProvider, RequestExecutor{
     /**
      * @param mse
      */
+    @SuppressWarnings("unchecked")
     public void processState(Map<String, Object> globals) {
         if (orderAnalizer == null){
             orderAnalizer = new OrderAnalizer((MasterHub)globals.get("masterHub"));
@@ -208,7 +211,19 @@ public class Account implements LogicItemsProvider, RequestExecutor{
         orderAnalizer.checkState(marketApi);
         globals.put("orderAnalizer", orderAnalizer);
         for(MarketBot bot : bots){
+            globals.put("log", new ArrayList<String>());
+            
             bot.execute(globals);
+            
+            if (Boolean.getBoolean("bitcoinultimate.bot.logLogic") == true){
+                LogLogicEntity ent = new LogLogicEntity();
+                ent.setAccountId(id);
+                ent.setBotId(bot.getId());
+                ent.setTime(new Date());
+                ent.setLog((List<String>)globals.get("log"));
+                MasterHub hub = (MasterHub)globals.get("masterHub");
+                hub.getEntityFactory().storeEntity(ent, false);
+            }
         }
     }
 

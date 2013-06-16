@@ -63,6 +63,7 @@ public class LogicItemStore extends LogicItem{
             ent.setId((String)params.get("botId"));
             ent.setValues(v);
             hub.getEntityFactory().storeEntity(ent, true);
+            addLog("[STORE] save " + v, params);
         } else {
             //deserialize
             MasterHub hub = (MasterHub)params.get("masterHub");
@@ -74,6 +75,7 @@ public class LogicItemStore extends LogicItem{
             if (ent != null){
                 params.putAll(ent.getValues());
             }
+            addLog("[STORE] load " + ent.getValues(), params);
         }
         return onNextItem; 
     }

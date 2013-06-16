@@ -85,17 +85,30 @@ public class LogicItemCondition extends LogicItem{
         if ("NULL".equals(value2) == true){
             if (cmp == Compare.EQUAL){
                 result = value1 == null;
+                addLog("[COND] " + var + "(" + value1 + ") == NULL ->" + result, params);
             } else {
                 result = value1 != null;
+                addLog("[COND] " + var +  "(" + value1 + ") != NULL ->" + result, params);
             }
         } else {
             // simple compare
             if (value1 instanceof Boolean) {
                 result = compareAsBoolean(value1, value2);
+                addLog("[COND] BOOL:" + var +  "(" + value1 + ") " + 
+                                cmp.getName() + var2toLog(value2) + " ->" +
+                                result, params);
+                
             } else if (value1 instanceof Integer) {
                 result = compareAsInteger(value1, value2);
+                addLog("[COND] INT:" + var +  "(" + value1 + ") " + 
+                                cmp.getName() + var2toLog(value2) + " ->" +
+                                result, params);
             } else {
                 result = compareAsDouble(value1, value2);
+                addLog("[COND] DOUBLE:" + var +  "(" + value1 + ") " + 
+                                cmp.getName() + var2toLog(value2) + " ->" +
+                                result, params);
+
             }
         }
         
@@ -103,6 +116,18 @@ public class LogicItemCondition extends LogicItem{
             return onNextItem;
         } else {
             return onFailItem;
+        }
+    }
+
+    /**
+     * @param value2
+     * @return
+     */
+    private String var2toLog(Object value2) {
+        if (var2 != null){
+            return var2 + " (" + value2 + ")";
+        } else {
+            return " (" + value2 + ")";
         }
     }
 

@@ -56,55 +56,59 @@ public class MtGoxApi implements MarketApi {
         this.secretKey = secret;
     }
 
-    private String query(String path, HashMap<String, String> args) {
+    private String query(String path, HashMap<String, String> args) 
+                    throws Exception{
         String result = null;
-        try {
-            // add nonce and build arg list
-            args.put("nonce", String.valueOf(System.currentTimeMillis()) + "000");
-            String post_data = this.buildQueryString(args);
- 
-            // args signature
-            String hash_data = path + "\0" + post_data;
-            Mac mac = Mac.getInstance("HmacSHA512");
-            SecretKeySpec secret_spec = new SecretKeySpec((new BASE64Decoder()).decodeBuffer(this.secretKey), "HmacSHA512");
-            mac.init(secret_spec);
-            String signature = (new BASE64Encoder()).encode(mac.doFinal(hash_data.getBytes()));
 
-            // build URL
-            URL queryUrl = new URL(baseUrl + path);
-            System.out.println(queryUrl);
-            
-            // create connection
-            HttpURLConnection connection = (HttpURLConnection)queryUrl.openConnection();
-            connection.setDoOutput(true);
-            
-            // set signature
-            signature = signature.replaceAll("\r\n", "");
-            signature = signature.replaceAll("\n", "");
-            connection.setRequestProperty("User-Agent", clientIdent);
-            connection.setRequestProperty("Rest-Key", this.apiKey);
-            connection.setRequestProperty("Rest-Sign", signature);
-            connection.setRequestProperty("Content-type","application/x-www-form-urlencoded");
-            
-            // write post
-            connection.getOutputStream().write(post_data.getBytes());
- 
-            // read info
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte buffer[] = new byte[500];
-            InputStream is = connection.getInputStream();
-            while( true ){
-                int len = is.read(buffer, 0, 500);
-                if (len > 0){
-                    baos.write(buffer, 0, len);
-                } else {
-                    break;
-                }
+        // add nonce and build arg list
+        args.put("nonce", String.valueOf(System.currentTimeMillis()) + "000");
+        String post_data = this.buildQueryString(args);
+
+        // args signature
+        String hash_data = path + "\0" + post_data;
+        Mac mac = Mac.getInstance("HmacSHA512");
+        SecretKeySpec secret_spec = new SecretKeySpec(
+                        (new BASE64Decoder()).decodeBuffer(this.secretKey),
+                        "HmacSHA512");
+        mac.init(secret_spec);
+        String signature = (new BASE64Encoder()).encode(mac.doFinal(hash_data
+                        .getBytes()));
+
+        // build URL
+        URL queryUrl = new URL(baseUrl + path);
+        System.out.println(queryUrl);
+
+        // create connection
+        HttpURLConnection connection = (HttpURLConnection) queryUrl
+                        .openConnection();
+        connection.setDoOutput(true);
+
+        // set signature
+        signature = signature.replaceAll("\r\n", "");
+        signature = signature.replaceAll("\n", "");
+        connection.setRequestProperty("User-Agent", clientIdent);
+        connection.setRequestProperty("Rest-Key", this.apiKey);
+        connection.setRequestProperty("Rest-Sign", signature);
+        connection.setRequestProperty("Content-type",
+                        "application/x-www-form-urlencoded");
+
+        // write post
+        connection.getOutputStream().write(post_data.getBytes());
+
+        // read info
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte buffer[] = new byte[500];
+        InputStream is = connection.getInputStream();
+        while (true) {
+            int len = is.read(buffer, 0, 500);
+            if (len > 0) {
+                baos.write(buffer, 0, len);
+            } else {
+                break;
             }
-            result = new String(baos.toByteArray(), 0, baos.size(), "UTF-8");
-        } catch (Exception ex) {
-            System.out.println(ex);
         }
+        result = new String(baos.toByteArray(), 0, baos.size(), "UTF-8");
+        
         return result;
     }
     
@@ -123,7 +127,7 @@ public class MtGoxApi implements MarketApi {
     }
     
     @Override
-    public AccountStateEntity getFounds(){
+    public AccountStateEntity getFounds() throws Exception{
         HashMap<String, String> query_args = new HashMap<>();        
         String s = query("MONEY/INFO", query_args);
         if (s == null){
@@ -285,7 +289,7 @@ public class MtGoxApi implements MarketApi {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<MarketOrderEntity> getOrders(){
+    public List<MarketOrderEntity> getOrders() throws Exception{
         HashMap<String, String> query_args = new HashMap<>();        
         String s = query("BTCPLN/money/orders", query_args);
         if (s == null){
@@ -317,7 +321,7 @@ public class MtGoxApi implements MarketApi {
     
     @Override
     @SuppressWarnings("unchecked")
-    public String buyBTC(double amount, double price){
+    public String buyBTC(double amount, double price) throws Exception{
         HashMap<String, String> query_args = new HashMap<>();
         query_args.put("amount_int", "" + (long)(amount * 100000));
         query_args.put("price_int", "" + (long)(price * 100000));
@@ -336,7 +340,7 @@ public class MtGoxApi implements MarketApi {
     }
     
     @Override
-    public String sellBTC(double amount, double price){
+    public String sellBTC(double amount, double price) throws Exception{
         HashMap<String, String> query_args = new HashMap<>();
         query_args.put("amount_int", "" + (long)(amount * 100000));
         query_args.put("price_int", "" + (long)(price * 100000));
@@ -356,7 +360,7 @@ public class MtGoxApi implements MarketApi {
     }
     
     @Override
-    public boolean cancelOrder(String oid, String type){
+    public boolean cancelOrder(String oid, String type) throws Exception{
         HashMap<String, String> query_args = new HashMap<>();
         query_args.put("oid", oid);
         String s = query("BTCPLN/money/order/cancel", query_args);        

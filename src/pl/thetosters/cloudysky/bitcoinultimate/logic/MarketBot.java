@@ -255,11 +255,6 @@ public class MarketBot implements RequestExecutor{
 	                break;
 	            }
 	        }
-	        if (params.get("lastError") != null){
-	            MasterHub hub = (MasterHub)params.get("MasterHub");
-	            hub.getLogicLogger().warn("Bot " + id + " error in logic:" + 
-	            params.get("lastError"));
-	        }
 	    } catch(Exception e){
 	        //we don't care. Since it may be exception due to user wrong definition
 	    }

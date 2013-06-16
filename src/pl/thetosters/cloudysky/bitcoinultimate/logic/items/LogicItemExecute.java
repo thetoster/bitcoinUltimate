@@ -61,59 +61,78 @@ public class LogicItemExecute extends LogicItem{
     public LogicItem execute(Map<String, Object> params) {
         Object obj = params.get(objectKey);
         if (obj == null){
-            params.put("lastError", id + ": No object named " + objectKey + 
-                            ", can't continue");
+            addLog("[EXEC] No object named " + objectKey + ", can't continue", 
+                            params);
+            return null;
         }
         Method m = findMethodToExecute(obj);
         if (m == null){
-            params.put("lastError", id + ": No method named " + methodName + 
-                            ", can't continue");
+            addLog("[EXEC] No method named " + methodName + ", can't continue", 
+                            params);
+            return null;
         }
-        Object p[] = prepareParams(m);
+        Object p[] = prepareParams(m, params);
         Object result;
         try {
+            addLog("[EXEC] executing " + objectKey + "." + methodName + 
+                            " with params:" + listParams(p), params);
             result = m.invoke(obj, p);
         } catch (Exception e) {
-            params.put("lastError","" + e);
+            addLog("[EXEC] exception:" + e, params);
             return null;
         }
         if (resultVar != null){
             params.put(resultVar, result);
+            addLog("[EXEC] result " + resultVar + "=" + result, params);
         }
         
         return onNextItem;
     }
 
-    private Object convert(String type, int index){
+    /**
+     * @param p
+     * @return
+     */
+    private String listParams(Object[] p) {
+        StringBuilder sb = new StringBuilder();
+        for(Object o : p){
+            sb.append(o);
+            sb.append(",");
+        }
+        return sb.toString();
+    }
+
+    private Object convert(String type, int index, Map<String, Object> data){
         Object result = null; 
+        Object inObj = data.get(params.get(index));
         switch(type){
             case "int":
-                result = new Integer(AutoConvertor.asInt(params.get(index)));
+                result = new Integer(AutoConvertor.asInt(inObj));
                 break;
             case "boolean":
-                result = new Boolean(AutoConvertor.asBoolean(params.get(index)));
+                result = new Boolean(AutoConvertor.asBoolean(inObj));
                 break;
             case "float":
-                result = new Float(AutoConvertor.asDouble(params.get(index)));
+                result = new Float(AutoConvertor.asDouble(inObj));
                 break;
             case "double":
-                result = new Double(AutoConvertor.asDouble(params.get(index)));
+                result = new Double(AutoConvertor.asDouble(inObj));
                 break;
             case "java.lang.String":
-                result = "" + params.get(index); 
+                result = "" + inObj; 
                 break;
         }
         return result;
     }
     
-    private Object[] prepareParams(Method m) {
+    private Object[] prepareParams(Method m, Map<String, Object> data) {
         Class<?>[] s = m.getParameterTypes();
         if (s.length == 0){
             return null;
         }
         Object o[] = new Object[s.length];
         for(int t = 0; t < s.length; t++){
-            o[t] = convert(s[t].getName(), t);
+            o[t] = convert(s[t].getName(), t, data);
         }
         return o;
     }

@@ -32,10 +32,14 @@ public class OrderAnalizer {
     }
     
     public void checkState(MarketApi api){
-        List<MarketOrderEntity> list = api.getOrders();
-        map = new HashMap<String, MarketOrderEntity>();
-        for(MarketOrderEntity o : list){
-            map.put(o.getOid(), o);
+        try{
+            List<MarketOrderEntity> list = api.getOrders();
+            map = new HashMap<String, MarketOrderEntity>();
+            for (MarketOrderEntity o : list) {
+                map.put(o.getOid(), o);
+            }
+        } catch (Exception e){
+            //not too much :/
         }
     }
 

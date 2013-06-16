@@ -92,6 +92,8 @@ public class LogicItemPredict extends LogicItem{
         result = result < min ? min : result;
         result = result > max ? max : result;
         params.put(resultVar, result);
+        addLog("[PRED] type=" + type +" depth=" + predDepth + " -> " + 
+                        resultVar + "=" + result, params);
         return onNextItem;
     }
     

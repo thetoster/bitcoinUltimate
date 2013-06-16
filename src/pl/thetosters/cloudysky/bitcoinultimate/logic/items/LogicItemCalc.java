@@ -55,7 +55,7 @@ public class LogicItemCalc extends LogicItem{
         }
         double result = eval.evaluate(equation);
         params.put(resultVar, result);
-        
+        addLog("[CALC] "+resultVar+" = " + result, params);
         return onNextItem;
     }
     
