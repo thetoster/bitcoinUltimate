@@ -46,6 +46,7 @@ public class MarketEngine {
         for(LogicEntity le : ent){
             Account acc = new Account( (AccountEntity)le );
             loadAccounContent(acc);
+            acc.getMarketApi().configure(((AccountEntity)le).getConfig());
             accounts.put(acc.getId(), acc);
         }
         masterHub.getLogicLogger().info("Restored " + ent.size() + " market accounts");
@@ -109,6 +110,9 @@ public class MarketEngine {
                 acc.setMarketApi( new MtGoxApi(acc.getApiKey(), 
                                 acc.getApiSecret()) );
                 break;
+            case DUMMY:
+                acc.setMarketApi( new DummyApi() );
+                break;
         }
     }
 
@@ -134,7 +138,7 @@ public class MarketEngine {
     }
     
     public String createAccount(Account.Type type, String owner, String apiKey, 
-                    String secret){
+                    String secret, Map<String, Object> params){
         
         long time = System.currentTimeMillis() - 1369683324000L;
         Account acc = new Account(type, Long.toString(time, Character.MAX_RADIX),
@@ -148,8 +152,13 @@ public class MarketEngine {
             case MTGOX:
                 acc.setMarketApi( new MtGoxApi(apiKey, secret) );
                 break;
+                
+            case DUMMY:
+                acc.setMarketApi( new DummyApi() );
+                break;
         }
-        
+        acc.getMarketApi().configure(params);
+
         accounts.put(acc.getId(), acc);
         AccountEntity ae = acc.requestStorageEntity();
         masterHub.getEntityFactory().storeEntity(ae, false);

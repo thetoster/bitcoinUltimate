@@ -30,6 +30,8 @@ public class ClientRequestAddAccount extends ClientRequestBase {
 
     private String type, apiKey, apiSecret;
     private MarketEngine engine;
+    private Map<String, Object> params;
+    
     /**
      * @param parent
      * @param masterHub
@@ -46,7 +48,7 @@ public class ClientRequestAddAccount extends ClientRequestBase {
             //masterHub.getEntityFactory().storeEntity(autEnt, true);
             Account.Type acType = Account.Type.valueOf(type);
             String id = engine.createAccount(acType, parent.getUsername(), 
-                            apiKey, apiSecret);
+                            apiKey, apiSecret, params);
             Map<String, Object> m = new HashMap<String, Object>();
             m.put("result", "ok");
             m.put("accountId", id);
@@ -84,4 +86,12 @@ public class ClientRequestAddAccount extends ClientRequestBase {
     public void setApiSecret(String apiSecret) {
         this.apiSecret = apiSecret;
     }
+
+    /**
+     * @param params the params to set
+     */
+    public void setParams(Map<String, Object> params) {
+        this.params = params;
+    }
+    
 }

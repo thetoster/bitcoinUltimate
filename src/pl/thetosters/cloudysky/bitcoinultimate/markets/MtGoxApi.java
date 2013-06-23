@@ -375,5 +375,15 @@ public class MtGoxApi implements MarketApi {
             e.printStackTrace();
         }
         return "success".equals(s);
-    }    
+    }
+
+    @Override
+    public void configure(Map<String, Object> params) {
+        //nothing
+    }
+
+    @Override
+    public Map<String, Object> getConfig() {
+        return new HashMap<>();
+    }
 }

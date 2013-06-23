@@ -17,7 +17,8 @@ import pl.thetosters.cloudysky.server.MasterHub;
 public class Account implements LogicItemsProvider, RequestExecutor{
     public enum Type{
         MTGOX,
-        BITCUREX
+        BITCUREX,
+        DUMMY
     }
     
     private Type type;
@@ -29,7 +30,7 @@ public class Account implements LogicItemsProvider, RequestExecutor{
     private MarketApi marketApi;
     private String owner;
     private OrderAnalizer orderAnalizer;
-    
+        
     public Account(Type aType, String anId, String aOwner, String anApiKey, 
                     String secret) {
         type = aType;
@@ -187,7 +188,8 @@ public class Account implements LogicItemsProvider, RequestExecutor{
         ae.setApiSecret(apiSecret);
         ae.setId(id);
         ae.setType(type);
-        ae.setOwnerLogin(owner);
+        ae.setOwnerLogin(owner); 
+        ae.setConfig(marketApi.getConfig());
         return ae;
     } 
     
@@ -209,6 +211,7 @@ public class Account implements LogicItemsProvider, RequestExecutor{
             orderAnalizer = new OrderAnalizer((MasterHub)globals.get("masterHub"));
         }
         orderAnalizer.checkState(marketApi);
+        
         globals.put("orderAnalizer", orderAnalizer);
         for(MarketBot bot : bots){
             globals.put("log", new ArrayList<String>());
@@ -228,20 +231,36 @@ public class Account implements LogicItemsProvider, RequestExecutor{
     }
 
     @Override
-    public String addBuyTransaction(double pricePLN, double amountBC) {
-        System.out.println("BUY BTC amount:" + amountBC + " for price:" + pricePLN);
-        return "TestBuyOrderId";
+    public String addBuyTransaction(String callerId, double pricePLN, 
+                    double amountBC) {
+        
+        try {
+            return marketApi.buyBTC(amountBC, pricePLN);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     @Override
-    public String addSellTransaction(double pricePLN, double amountBC) {
-        System.out.println("SELL BTC amount:" + amountBC + " for price:" + pricePLN);
-        return "TestSellOrderId";
+    public String addSellTransaction(String callerId, double pricePLN, 
+                    double amountBC) {
+        
+        try {
+            return marketApi.sellBTC(amountBC, pricePLN);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     @Override
-    public void cancelOrder(String order) {
-        System.out.println("Cancel order" + order);
+    public void cancelOrder(String callerId, String order) {
+        try {
+            marketApi.cancelOrder(order, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public String getOwner(){
@@ -289,5 +308,6 @@ public class Account implements LogicItemsProvider, RequestExecutor{
         m.put("currentBTC", currentBTC);
         m.put("bots", botsId);
         m.put("enabledBots", enabledBotsId);
+        m.put("config", marketApi.getConfig());
     }
 }

@@ -1,25 +1,34 @@
 package pl.thetosters.cloudysky.bitcoinultimate;
 
-import pl.thetosters.cloudysky.bitcoinultimate.markets.MtGoxApi;
+import java.util.HashMap;
+import java.util.Map;
+
+import pl.thetosters.cloudysky.bitcoinultimate.entities.MarketStateEntity;
+import pl.thetosters.cloudysky.bitcoinultimate.markets.DummyApi;
 
 
 public class BotTest {
-
-	/**
-	 * @param args
-	 * @throws Exception 
-	 */
+    static DummyApi api = new DummyApi();
+    
 	public static void main(String[] args) throws Exception {
 	    
-//      BitCurexApi bca = new BitCurexApi("3546da1ed84ec83ec2e81f25e9719561215af6ccfe6cbcb86fa3d8a7f750a18f",
-//      "G8a2HhQN/t5Gz8l7TZEDmNrX6+Loob7bp/RiulQDFHr/LSFio+QlCbRklZLrAwgnIxM56Zveer+/IJm79G1UQQ==");
-////bca.getFounds();
-//List<?> l = bca.getOrderBook();
-//System.out.println(l);
-MtGoxApi gs = new MtGoxApi("1dfe9532-3014-4409-b1d6-7e272c1040ce", 
-      "GmLjIhn9B1dEklurM+usyZjJKXrN0abK1Z6kl+Vmo4gODw3ymCBDhvMgK39fmSvjQ3sUIofrgWBKdbkNAwXJfA==");
-System.out.println(gs.getFounds());
-//gs.executeQuery();
+	    Map<String, Object> result = new HashMap<>();
+        result.put("ticker", 0);
+        result.put("avrPrice", 330);
+        result.put("tickerAmpl", 20);
+        result.put("tickerStdDev", 5);
+        result.put("drift", 330);
+        result.put("driftMean", 330);
+        result.put("driftStdDev", 60);
+        result.put("availPLN", 100);
+        result.put("availBTC", 0);
+        result.put("driftTicker", 0);
+        result.put("driftCount", 45);
+        api.configure(result);
+        for(int t = 0; t < 100; t++){
+            MarketStateEntity mse = api.getTicker();
+            System.out.println(mse.getAvrPrice() + "\u0009" + mse.getMinPrice()+ "\u0009" + mse.getMaxPrice());
+        }
 	}
 
 }

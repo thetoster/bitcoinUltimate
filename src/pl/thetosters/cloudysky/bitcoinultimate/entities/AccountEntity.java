@@ -10,6 +10,7 @@
 package pl.thetosters.cloudysky.bitcoinultimate.entities;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import pl.thetosters.cloudysky.bitcoinultimate.logic.Account.Type;
 import pl.thetosters.cloudysky.server.entities.LogicEntity;
@@ -28,6 +29,7 @@ public class AccountEntity implements Serializable, LogicEntity{
     private String apiKey;
     private String apiSecret;
     private String ownerLogin;
+    private Map<String, Object> config;
     
     /**
      * @return the type
@@ -115,6 +117,16 @@ public class AccountEntity implements Serializable, LogicEntity{
             return false;
         return true;
     }
-
-    
+    /**
+     * @return the config
+     */
+    public Map<String, Object> getConfig() {
+        return config;
+    }
+    /**
+     * @param config the config to set
+     */
+    public void setConfig(Map<String, Object> config) {
+        this.config = config;
+    }
 }

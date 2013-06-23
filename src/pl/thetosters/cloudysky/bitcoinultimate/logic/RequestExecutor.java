@@ -7,7 +7,8 @@ public interface RequestExecutor {
 	 * @param amountBC ile BC chcemy kupić
 	 * @return zwrocone przez server transaction id
 	 */
-	public String addBuyTransaction(double pricePLN, double amountBC);
+	public String addBuyTransaction(String callerId, double pricePLN, 
+	                double amountBC);
 	
 	/**
 	 * Wysyłamy do sklepu rządanie sprzedaży BC.
@@ -15,11 +16,12 @@ public interface RequestExecutor {
 	 * @param amountBC ile BC chcemy sprzedaż
 	 * @return zwrocone przez server transaction id
 	 */
-	public String addSellTransaction(double pricePLN, double amountBC);
+	public String addSellTransaction(String callerId, double pricePLN, 
+	                double amountBC);
 
     /**
      * Cancel previous order
      * @param order
      */
-    public void cancelOrder(String order);
+    public void cancelOrder(String callerId, String order);
 }

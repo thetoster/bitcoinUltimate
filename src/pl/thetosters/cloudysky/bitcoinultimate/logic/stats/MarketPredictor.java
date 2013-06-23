@@ -54,7 +54,7 @@ public class MarketPredictor {
         return type;
     }
 
-    public MarketStateEntity lastMarketState(){
+    public MarketStateEntity getLastMarketState(){
         int size = history.size();
         return size > 0 ? history.get(size-1) : null;
     }

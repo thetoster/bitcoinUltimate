@@ -286,4 +286,14 @@ public class BitCurexApi implements MarketApi{
         return list;
     }
 
+    @Override
+    public void configure(Map<String, Object> params) {
+        //nothing
+    }
+
+    @Override
+    public Map<String, Object> getConfig() {
+        return new HashMap<>();
+    }
+
 }

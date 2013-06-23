@@ -75,7 +75,7 @@ public class LogicItemStore extends LogicItem{
             if (ent != null){
                 params.putAll(ent.getValues());
             }
-            addLog("[STORE] load " + ent.getValues(), params);
+            addLog("[STORE] load " + (ent != null ? ent.getValues() : ""), params);
         }
         return onNextItem; 
     }

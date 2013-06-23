@@ -5,6 +5,7 @@ Dinners:
 In:
 {"addAccount":{"type":"MTGOX", "apiKey":"", "apiSecret":""}}
 {"addAccount":{"type":"BITCUREX", "apiKey":"", "apiSecret":""}}
+{"addAccount":{"type":"DUMMY", "apiKey":"", "apiSecret":"", "config":{..}}}
 Out:
 {"addAccount":{"result":"ok","accountId":"..."}}
 
@@ -30,7 +31,7 @@ Out:
 dane zebrane ze wszystkich botow (jako suma)
 {"accountState":{
     "accountId":"..", 
-    "type":"BITCUREX/MTGOX",
+    "type":"BITCUREX/MTGOX/DUMMY",
     "totalSoldPLN":"..",
     "totalSoldBTC":"..",
     "totalBougthPLN":"..",
@@ -48,7 +49,7 @@ Out:
 dane zebrane ze wszystkich botow (jako suma)
 {"accountState":{
     "accountId":"..", 
-    "type":"BITCUREX/MTGOX",
+    "type":"BITCUREX/MTGOX/DUMMY",
     "enabled":0/1,
     "workPlan":"...",
     "botId":"..",

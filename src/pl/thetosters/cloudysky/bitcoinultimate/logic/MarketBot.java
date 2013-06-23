@@ -237,10 +237,10 @@ public class MarketBot implements RequestExecutor{
 	    params.putAll(globals);
 	    params.put("curPLN", currentPLN);
 	    params.put("curBTC", currentBTC);
-	    params.put("marketAvg", pred.lastMarketState().getAvrPrice());
-	    params.put("marketAvgW", pred.lastMarketState().getWeightedAvrPrice());
-	    params.put("marketLow", pred.lastMarketState().getMinPrice());
-	    params.put("marketHigh", pred.lastMarketState().getMaxPrice());
+	    params.put("marketAvg", pred.getLastMarketState().getAvrPrice());
+	    params.put("marketAvgW", pred.getLastMarketState().getWeightedAvrPrice());
+	    params.put("marketLow", pred.getLastMarketState().getMinPrice());
+	    params.put("marketHigh", pred.getLastMarketState().getMaxPrice());
 	    params.put("executor", this);
 	    params.put("botId", id);
 	    try{
@@ -261,21 +261,23 @@ public class MarketBot implements RequestExecutor{
 	}
 
     @Override
-    public String addBuyTransaction(double pricePLN, double amountBC) {
+    public String addBuyTransaction(String callerId, double pricePLN, 
+                    double amountBC) {
         operationsCount++;
-        return reqExecutor.addBuyTransaction(pricePLN, amountBC);
+        return reqExecutor.addBuyTransaction(id, pricePLN, amountBC);
     }
 
     @Override
-    public String addSellTransaction(double pricePLN, double amountBC) {
+    public String addSellTransaction(String callerId, double pricePLN, 
+                    double amountBC) {
         operationsCount++; 
-        return reqExecutor.addSellTransaction(pricePLN, amountBC);
+        return reqExecutor.addSellTransaction(id, pricePLN, amountBC);
     }
 
     @Override
-    public void cancelOrder(String order) {
+    public void cancelOrder(String callerId, String order) {
         operationsCount++;
-        reqExecutor.cancelOrder(order);
+        reqExecutor.cancelOrder(id, order);
     }
 
     /**

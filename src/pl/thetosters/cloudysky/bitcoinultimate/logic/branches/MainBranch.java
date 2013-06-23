@@ -270,6 +270,7 @@ public class MainBranch extends BranchBaseImpl {
      * @param values
      * @return
      */
+    @SuppressWarnings("unchecked")
     private ClientRequest buildAddAccountRequest(Map<?, ?> values) {
         String apiKey = (String)values.get("apiKey");
         String apiSecret = (String)values.get("apiSecret");
@@ -291,7 +292,7 @@ public class MainBranch extends BranchBaseImpl {
         cr.setApiKey(apiKey);
         cr.setApiSecret(apiSecret);
         cr.setType(type);
-        
+        cr.setParams((Map<String, Object>) values.get("config"));
         return cr;
     }
 

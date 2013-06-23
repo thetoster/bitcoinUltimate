@@ -11,6 +11,7 @@ package pl.thetosters.cloudysky.bitcoinultimate.storage.mongodb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -101,6 +102,7 @@ public class MongoSubFactoryAccountEntity extends AbstractMongoSubFactory
      * @see pl.thetosters.cloudysky.server.storage.SubFactory#requestEntities(java.lang.String,
      *      java.lang.Object)
      */
+    @SuppressWarnings("unchecked")
     private AccountEntity unpackFromDB(DBObject rs){
         AccountEntity record = new AccountEntity();
         record.setApiKey( decrypt((byte[]) rs.get("apiKey")) );//decrypt((String) rs.get("apiKey")) );
@@ -108,6 +110,7 @@ public class MongoSubFactoryAccountEntity extends AbstractMongoSubFactory
         record.setId((String) rs.get("id"));
         record.setType(Type.valueOf((String)rs.get("type")));
         record.setOwnerLogin((String) rs.get("owner"));
+        record.setConfig( (Map<String, Object>) rs.get("config"));
         return record;
     }
     
@@ -209,6 +212,7 @@ public class MongoSubFactoryAccountEntity extends AbstractMongoSubFactory
         doc.put("id", ent.getId());
         doc.put("type", ent.getType().name());
         doc.put("owner", ent.getOwnerLogin());
+        doc.put("config", ent.getConfig());
 
         if (overwrite == true) {
             coll.save(doc);

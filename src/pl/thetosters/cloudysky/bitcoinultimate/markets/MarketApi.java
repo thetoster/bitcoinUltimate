@@ -9,6 +9,7 @@
  */
 package pl.thetosters.cloudysky.bitcoinultimate.markets;
 import java.util.List;
+import java.util.Map;
 
 import pl.thetosters.cloudysky.bitcoinultimate.entities.AccountStateEntity;
 import pl.thetosters.cloudysky.bitcoinultimate.entities.MarketOrderEntity;
@@ -35,5 +36,9 @@ public interface MarketApi {
     public abstract String sellBTC(double amount, double price) throws Exception;
 
     public abstract boolean cancelOrder(String oid, String type) throws Exception;
+
+    public abstract void configure(Map<String, Object> params);
+
+    public abstract Map<String, Object> getConfig();
 
 }
