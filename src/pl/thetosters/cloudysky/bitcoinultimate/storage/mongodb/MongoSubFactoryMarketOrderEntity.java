@@ -40,6 +40,20 @@ public class MongoSubFactoryMarketOrderEntity extends AbstractMongoSubFactory
 
     private MongoStorage repository;
 
+    private MarketOrderEntity unpackDB(DBObject rs){
+        MarketOrderEntity record = new MarketOrderEntity();
+        record.setAmount((Double) rs.get("amount"));
+        record.setMarket((String) rs.get("market"));
+        record.setOid((String) rs.get("oid"));
+        record.setPrice((Double) rs.get("price"));
+        record.setTime(new Date((Long) rs.get("date")));
+        record.setSellBTC((Boolean) rs.get("sell"));
+        record.setState((String) rs.get("state"));
+        record.setBotId((String) rs.get("botId"));
+        record.setAccountId((String) rs.get("accountId"));
+        record.setTracked((Boolean) rs.get("tracked"));
+        return record;
+    }
     /**
      * @see pl.thetosters.cloudysky.server.storage.SubFactory#requestEntities(java.lang.String,
      *      java.lang.Object)
@@ -55,15 +69,7 @@ public class MongoSubFactoryMarketOrderEntity extends AbstractMongoSubFactory
         while (cur.hasNext() == true) {
             DBObject rs = cur.next();
 
-            MarketOrderEntity record = new MarketOrderEntity();
-            record.setAmount((Double) rs.get("amount"));
-            record.setMarket((String) rs.get("market"));
-            record.setOid((String) rs.get("oid"));
-            record.setPrice((Double) rs.get("price"));
-            record.setTime(new Date((Long) rs.get("date")));
-            record.setSellBTC((Boolean) rs.get("sell"));
-            record.setState((String) rs.get("state"));
-            record.setBotId((String) rs.get("botId"));
+            MarketOrderEntity record = unpackDB(rs);
             result.add(record);
         }
         cur.close();
@@ -84,15 +90,7 @@ public class MongoSubFactoryMarketOrderEntity extends AbstractMongoSubFactory
 
         MarketOrderEntity record = null;
         if (rs != null) {
-            record = new MarketOrderEntity();
-            record.setAmount((Double) rs.get("amount"));
-            record.setMarket((String) rs.get("market"));
-            record.setOid((String) rs.get("oid"));
-            record.setPrice((Double) rs.get("price"));
-            record.setTime(new Date((Long) rs.get("date")));
-            record.setSellBTC((Boolean) rs.get("sell"));
-            record.setState((String) rs.get("state"));
-            record.setBotId((String) rs.get("botId"));
+            record = unpackDB(rs);
         }
         return record;
     }
@@ -119,6 +117,7 @@ public class MongoSubFactoryMarketOrderEntity extends AbstractMongoSubFactory
 
         BasicDBObject query = new BasicDBObject();
         query.put("oid", ((MarketOrderEntity) o).getOid());
+        query.put("accountId", ((MarketOrderEntity) o).getAccountId());
         DBCursor cur = coll.find(query);
         while (cur.hasNext() == true) {
             coll.remove(cur.next());
@@ -155,7 +154,8 @@ public class MongoSubFactoryMarketOrderEntity extends AbstractMongoSubFactory
         doc.put("sell", ent.isSellBTC());
         doc.put("state", ent.getState());
         doc.put("botId", ent.getBotId());
-                
+        doc.put("accountId", ent.getAccountId());
+        doc.put("tracked", ent.isTracked());
         if (overwrite == true) {
             coll.save(doc);
         } else {
@@ -173,16 +173,7 @@ public class MongoSubFactoryMarketOrderEntity extends AbstractMongoSubFactory
         List<LogicEntity> result = new ArrayList<LogicEntity>();
         while (cur.hasNext() == true) {
             DBObject rs = cur.next();
-
-            MarketOrderEntity record = new MarketOrderEntity();
-            record.setAmount((Double) rs.get("amount"));
-            record.setMarket((String) rs.get("market"));
-            record.setOid((String) rs.get("oid"));
-            record.setPrice((Double) rs.get("price"));
-            record.setTime(new Date((Long) rs.get("date")));
-            record.setSellBTC((Boolean) rs.get("sell"));
-            record.setState((String) rs.get("state"));
-            record.setBotId((String) rs.get("botId"));
+            MarketOrderEntity record = unpackDB(rs);
             result.add(record);
         }
         cur.close();

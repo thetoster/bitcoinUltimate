@@ -299,4 +299,28 @@ public class MarketBot implements RequestExecutor{
         m.put("enabled", enabled);
         m.put("workPlan", workPlan == null ? "" : workPlan.getId());
     }
+
+    /**
+     * @param amount
+     * @param d
+     */
+    public void changeBTCAmountDueSell(double amount, double pricePerAmount) {
+        totalSellBTC += amount;
+        currentBTC -= amount;
+        
+        totalSellPLN += pricePerAmount;
+        currentPLN += pricePerAmount;
+    }
+
+    /**
+     * @param amount
+     * @param d
+     */
+    public void changeBTCAmountDueBuy(double amount, double pricePerAmount) {
+        totalBuyBTC += amount;
+        currentBTC += amount;
+        
+        currentPLN -= pricePerAmount;
+        totalBuyPLN += pricePerAmount;
+    }
 }

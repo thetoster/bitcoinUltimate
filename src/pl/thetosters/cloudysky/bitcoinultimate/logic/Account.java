@@ -8,6 +8,7 @@ import java.util.Map;
 
 import pl.thetosters.cloudysky.bitcoinultimate.entities.AccountEntity;
 import pl.thetosters.cloudysky.bitcoinultimate.entities.LogLogicEntity;
+import pl.thetosters.cloudysky.bitcoinultimate.entities.MarketOrderEntity;
 import pl.thetosters.cloudysky.bitcoinultimate.logic.items.LogicItem;
 import pl.thetosters.cloudysky.bitcoinultimate.logic.items.LogicItemsProvider;
 import pl.thetosters.cloudysky.bitcoinultimate.markets.MarketApi;
@@ -208,9 +209,10 @@ public class Account implements LogicItemsProvider, RequestExecutor{
     @SuppressWarnings("unchecked")
     public void processState(Map<String, Object> globals) {
         if (orderAnalizer == null){
-            orderAnalizer = new OrderAnalizer((MasterHub)globals.get("masterHub"));
+            orderAnalizer = new OrderAnalizer((MasterHub)globals.get("masterHub"),
+                            id);
         }
-        orderAnalizer.checkState(marketApi);
+        orderAnalizer.checkState(marketApi, this);
         
         globals.put("orderAnalizer", orderAnalizer);
         for(MarketBot bot : bots){
@@ -235,7 +237,19 @@ public class Account implements LogicItemsProvider, RequestExecutor{
                     double amountBC) {
         
         try {
-            return marketApi.buyBTC(amountBC, pricePLN);
+            String oid = marketApi.buyBTC(amountBC, pricePLN);
+            MarketOrderEntity order = new MarketOrderEntity();
+            order.setAmount(amountBC);
+            order.setPrice(pricePLN);
+            order.setMarket(type.name());
+            order.setOid(oid);
+            order.setSellBTC(false);
+            order.setTime(new Date());
+            order.setBotId(callerId);
+            order.setAccountId(id);
+            orderAnalizer.addOrder(order);
+            orderAnalizer.storeOrder(oid);
+            return oid;
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -247,7 +261,19 @@ public class Account implements LogicItemsProvider, RequestExecutor{
                     double amountBC) {
         
         try {
-            return marketApi.sellBTC(amountBC, pricePLN);
+            String oid = marketApi.sellBTC(amountBC, pricePLN);
+            MarketOrderEntity order = new MarketOrderEntity();
+            order.setAmount(amountBC);
+            order.setPrice(pricePLN);
+            order.setMarket(type.name());
+            order.setOid(oid);
+            order.setSellBTC(true);
+            order.setTime(new Date());
+            order.setBotId(callerId);
+            order.setAccountId(id);
+            orderAnalizer.addOrder(order);
+            orderAnalizer.storeOrder(oid);
+            return oid;
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -258,6 +284,8 @@ public class Account implements LogicItemsProvider, RequestExecutor{
     public void cancelOrder(String callerId, String order) {
         try {
             marketApi.cancelOrder(order, "");
+            orderAnalizer.cancelOrder(order);
+            orderAnalizer.storeOrder(order);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -309,5 +337,73 @@ public class Account implements LogicItemsProvider, RequestExecutor{
         m.put("bots", botsId);
         m.put("enabledBots", enabledBotsId);
         m.put("config", marketApi.getConfig());
+    }
+
+    /**
+     * @param amount
+     * @param price
+     * @param botId
+     */
+    public void changeBTCAmountDueSell(double amount, double price, String botId) {
+        MarketBot bot = null;
+        for(MarketBot tmp : bots){
+            if (tmp.getId().equals(botId) == true){
+                bot = tmp;
+                break;
+            }
+        }
+        if (bot == null){
+            return;
+        }
+        double oldAmount = amount; 
+        switch(type){
+            case BITCUREX:
+                //0.06% BTC fee
+                amount *= 0.994;
+                break;
+                
+            case MTGOX:
+                //0.06% BTC fee
+                amount *= 0.994;
+                break;
+                
+            case DUMMY:
+                break;
+        }
+        bot.changeBTCAmountDueSell(amount, oldAmount * price);
+    }
+
+    /**
+     * @param amount
+     * @param price
+     * @param botId
+     */
+    public void changeBTCAmountDueBuy(double amount, double price, String botId) {
+        MarketBot bot = null;
+        for(MarketBot tmp : bots){
+            if (tmp.getId().equals(botId) == true){
+                bot = tmp;
+                break;
+            }
+        }
+        if (bot == null){
+            return;
+        }
+        double oldAmount = amount; 
+        switch(type){
+            case BITCUREX:
+                //0.06% BTC fee
+                amount *= 0.994;
+                break;
+                
+            case MTGOX:
+                //0.06% BTC fee
+                amount *= 0.994;
+                break;
+                
+            case DUMMY:
+                break;
+        }
+        bot.changeBTCAmountDueBuy(amount, oldAmount * price);
     }
 }

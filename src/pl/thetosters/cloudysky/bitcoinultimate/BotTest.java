@@ -11,7 +11,6 @@ public class BotTest {
     static DummyApi api = new DummyApi();
     
 	public static void main(String[] args) throws Exception {
-	    
 	    Map<String, Object> result = new HashMap<>();
         result.put("ticker", 0);
         result.put("avrPrice", 330);
