@@ -69,6 +69,7 @@ public abstract class LogicItem {
 	    if (log != null){
 	        log.add(id + ": " + s);
 	    }
+	   // System.out.println(id + ": " + s);
 	}
     /**
      * @param params

@@ -26,6 +26,7 @@ public class LogLogicEntity implements Serializable, LogicEntity{
 
     private static final long serialVersionUID = 2694227074588049945L;
     private Date time;
+    private int iteration;
     private String botId;
     private String accountId;
     private List<String> log;
@@ -76,6 +77,18 @@ public class LogLogicEntity implements Serializable, LogicEntity{
      */
     public void setLog(List<String> log) {
         this.log = log;
+    }
+    /**
+     * @return the iteration
+     */
+    public int getIteration() {
+        return iteration;
+    }
+    /**
+     * @param iteration the iteration to set
+     */
+    public void setIteration(int iteration) {
+        this.iteration = iteration;
     }
     
     

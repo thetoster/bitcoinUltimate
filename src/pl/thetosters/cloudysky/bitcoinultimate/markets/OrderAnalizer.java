@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.mongodb.BasicDBObject;
-
 import pl.thetosters.cloudysky.bitcoinultimate.entities.MarketOrderEntity;
 import pl.thetosters.cloudysky.bitcoinultimate.logic.Account;
 import pl.thetosters.cloudysky.server.MasterHub;
@@ -24,6 +22,8 @@ import pl.thetosters.cloudysky.server.entities.LogicEntity;
 import pl.thetosters.cloudysky.server.storage.SpecializedQuery;
 import pl.thetosters.cloudysky.server.storage.StorageLink;
 import pl.thetosters.cloudysky.server.storage.SubFactory;
+
+import com.mongodb.BasicDBObject;
 
 
 /**
@@ -68,6 +68,7 @@ public class OrderAnalizer {
      */
     private void handleClosed(List<MarketOrderEntity> list, Account acc) {
         Set<Entry<String, MarketOrderEntity>> set = map.entrySet();
+        System.out.println("IN ANAL:" + map.keySet());
         for(Entry<String, MarketOrderEntity> ent : set){
             MarketOrderEntity order = ent.getValue(); 
             if (list.contains(order) == true){
@@ -75,8 +76,11 @@ public class OrderAnalizer {
                 continue;
             }
             //looks like it gone
-            set.remove(order);
-            
+            set.remove(ent);
+            System.out.println("ORDER REMOVED:" + order);
+            if (order.isTracked() == false){
+                continue;
+            }
             if (order.isSellBTC() == true){
                 acc.changeBTCAmountDueSell(order.getAmount(), order.getPrice(),
                                 order.getBotId());
@@ -84,7 +88,9 @@ public class OrderAnalizer {
                 acc.changeBTCAmountDueBuy(order.getAmount(), order.getPrice(),
                                 order.getBotId());
             }
-            
+            if (order.getTime() == null){
+                System.out.println("dkjf2");
+            }
             order.setTracked(false);
             masterHub.getEntityFactory().storeEntity(order, true);
         }
@@ -92,6 +98,9 @@ public class OrderAnalizer {
 
     public void addOrder(MarketOrderEntity order){
         order.setTracked(true);
+        if (order.getTime() == null){
+            System.out.println("dkjf");
+        }
         map.put(order.getOid(), order);
     }
     

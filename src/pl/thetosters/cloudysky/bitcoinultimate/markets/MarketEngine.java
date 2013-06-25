@@ -96,6 +96,7 @@ public class MarketEngine {
             bot.setCurrentBTC(mbe.getCurrentBTC());
             bot.setBasePricePLN(mbe.getBasePricePLN());
             bot.setEnabled(mbe.isEnabled());
+            bot.setIteration(mbe.getIteration());
             bot.setReqExecutor(acc);
             mb.add(bot);
         }
@@ -131,6 +132,7 @@ public class MarketEngine {
         ent.setTotalBuyPLN(bot.getTotalBuyPLN());
         ent.setTotalSellBTC(bot.getTotalSellBTC());
         ent.setTotalSellPLN(bot.getTotalSellPLN());
+        ent.setIteration(bot.getIteration());
         if (bot.getWorkPlan() != null){
             ent.setWorkPlanId(bot.getWorkPlan().getId());
         }
@@ -186,7 +188,7 @@ public class MarketEngine {
                 } catch (Exception e){
                     //Something wrong with API, skip this iteration
                     masterHub.getLogicLogger().info("Can't access market api " 
-                                    + acc.getType());
+                                    + acc.getType() + " exception:" + e);
                     continue;
                 }
                 if (mse != null){

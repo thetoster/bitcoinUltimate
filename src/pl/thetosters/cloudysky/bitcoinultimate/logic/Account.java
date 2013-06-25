@@ -208,14 +208,29 @@ public class Account implements LogicItemsProvider, RequestExecutor{
      */
     @SuppressWarnings("unchecked")
     public void processState(Map<String, Object> globals) {
+        Map<String, Object> m = new HashMap<>();
+        getStatus(m);
+        System.out.println("currentPLN:"+m.get("currentPLN")+"currentBTC:"+m.get("currentBTC"));
+        
+        
         if (orderAnalizer == null){
             orderAnalizer = new OrderAnalizer((MasterHub)globals.get("masterHub"),
                             id);
         }
         orderAnalizer.checkState(marketApi, this);
         
+        
+        System.out.println("--------------");
+        m = new HashMap<>();
+        getStatus(m);
+        System.out.println("currentPLN:"+m.get("currentPLN")+"currentBTC:"+m.get("currentBTC"));
+        System.out.println("--------------");
+        
+        
         globals.put("orderAnalizer", orderAnalizer);
         for(MarketBot bot : bots){
+            System.out.println("Iteration:" + bot.getIteration());
+            
             globals.put("log", new ArrayList<String>());
             
             bot.execute(globals);
@@ -226,10 +241,12 @@ public class Account implements LogicItemsProvider, RequestExecutor{
                 ent.setBotId(bot.getId());
                 ent.setTime(new Date());
                 ent.setLog((List<String>)globals.get("log"));
+                ent.setIteration(bot.getIteration());
                 MasterHub hub = (MasterHub)globals.get("masterHub");
                 hub.getEntityFactory().storeEntity(ent, false);
             }
         }
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++");
     }
 
     @Override

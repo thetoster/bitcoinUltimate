@@ -25,6 +25,7 @@ public class MarketBot implements RequestExecutor{
     private double currentPLN;  //ile mamy gotówki do dyspozycji
     private double currentBTC;   //ile mamy BC do dyspozycji
     private double basePricePLN;    //bazowa cena dla operacji (ostatnia cena kupna lub sprzedały)
+    private int iteration;
     
     private RequestExecutor reqExecutor;
 
@@ -232,6 +233,7 @@ public class MarketBot implements RequestExecutor{
         if (isValid == false){
             return;
         }
+        iteration++;
         MarketPredictor pred = (MarketPredictor)globals.get("predictor");
 	    Map<String, Object> params = new HashMap<>();
 	    params.putAll(globals);
@@ -242,6 +244,7 @@ public class MarketBot implements RequestExecutor{
 	    params.put("marketLow", pred.getLastMarketState().getMinPrice());
 	    params.put("marketHigh", pred.getLastMarketState().getMaxPrice());
 	    params.put("executor", this);
+	    params.put("iteration", iteration);
 	    params.put("botId", id);
 	    try{
 	        LogicItem li = workPlan;
@@ -297,6 +300,7 @@ public class MarketBot implements RequestExecutor{
         m.put("currentPLN", currentPLN);
         m.put("currentBTC", currentBTC);
         m.put("enabled", enabled);
+        m.put("iteration", iteration);
         m.put("workPlan", workPlan == null ? "" : workPlan.getId());
     }
 
@@ -310,6 +314,16 @@ public class MarketBot implements RequestExecutor{
         
         totalSellPLN += pricePerAmount;
         currentPLN += pricePerAmount;
+        
+        if (Math.abs(currentPLN) < 1e8){
+            currentPLN = 0;
+        }
+        if (Math.abs(currentBTC) < 1e8){
+            currentBTC = 0;
+        }
+        if (currentPLN < 0 || currentBTC < 0){
+            System.out.println("zuuuooo");
+        }
     }
 
     /**
@@ -319,8 +333,33 @@ public class MarketBot implements RequestExecutor{
     public void changeBTCAmountDueBuy(double amount, double pricePerAmount) {
         totalBuyBTC += amount;
         currentBTC += amount;
-        
+
         currentPLN -= pricePerAmount;
         totalBuyPLN += pricePerAmount;
+        
+        if (Math.abs(currentPLN) < 1e8){
+            currentPLN = 0;
+        }
+        if (Math.abs(currentBTC) < 1e8){
+            currentBTC = 0;
+        }
+        if (currentPLN < 0 || currentBTC < 0){
+            System.out.println("zuuuooo");
+        }
+        
+    }
+
+    /**
+     * @param iteration2
+     */
+    public void setIteration(int iter) {
+        iteration = iter;
+    }
+
+    /**
+     * @return
+     */
+    public int getIteration() {
+        return iteration;
     }
 }

@@ -113,6 +113,10 @@ public class DummyApi implements MarketApi{
                 
             }
         }
+        System.out.println("ORDERS:" + orders.keySet());
+        if (orders.size() > 1){
+            System.out.println("??");
+        }
         return mse;
     }
 
@@ -135,21 +139,27 @@ public class DummyApi implements MarketApi{
             moe.setPrice(price);
             moe.setSellBTC(type.equals("sell"));
             moe.setState("open");
+            moe.setTime(new Date());
+            moe.setMarket("DUMMY");
             result.add(moe);
         }
         return result;
     }
-
+int cntB = 0, cntS = 0;
     @Override
     public String buyBTC(double amount, double price) throws Exception {
-        String oid = "B_" + UUID.randomUUID().toString();
+        //String oid = "B_" + UUID.randomUUID().toString();
+        String oid = "B_" + cntB;
+        cntB++;
         orders.put(oid, new Object[]{"buy", amount, price});
         return oid;
     }
 
     @Override
     public String sellBTC(double amount, double price) throws Exception {
-        String oid = "S_" + UUID.randomUUID().toString();
+        //String oid = "S_" + UUID.randomUUID().toString();
+        String oid = "S_" + cntS;
+        cntS++;
         orders.put(oid, new Object[]{"sell", amount, price});
         return oid;
     }

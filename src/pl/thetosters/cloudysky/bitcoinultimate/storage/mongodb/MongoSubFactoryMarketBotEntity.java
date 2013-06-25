@@ -58,6 +58,7 @@ public class MongoSubFactoryMarketBotEntity extends AbstractMongoSubFactory
         record.setCurrentBTC((Double)rs.get("curBTC"));
         record.setCurrentPLN((Double)rs.get("curPLN"));
         record.setBasePricePLN((Double)rs.get("basePrice"));
+        record.setIteration((Integer)rs.get("iteration"));
         return record;
     }
 
@@ -162,7 +163,8 @@ public class MongoSubFactoryMarketBotEntity extends AbstractMongoSubFactory
         doc.put("curBTC", ent.getCurrentBTC());
         doc.put("curPLN", ent.getCurrentPLN());
         doc.put("basePrice", ent.getBasePricePLN());
-                
+        doc.put("iteration", ent.getIteration());
+        
         if (overwrite == true) {
             coll.save(doc);
         } else {

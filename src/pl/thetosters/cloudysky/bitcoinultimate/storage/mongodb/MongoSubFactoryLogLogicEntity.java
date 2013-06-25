@@ -48,6 +48,7 @@ public class MongoSubFactoryLogLogicEntity extends AbstractMongoSubFactory
         LogLogicEntity record = new LogLogicEntity();
         record.setAccountId((String) rs.get("accId"));
         record.setBotId((String) rs.get("botId"));
+        record.setIteration((Integer) rs.get("iteration"));
         List<String> l = new ArrayList<>();
         Collections.addAll(l, (String[]) rs.get("log"));
         record.setLog(l);
@@ -147,7 +148,8 @@ public class MongoSubFactoryLogLogicEntity extends AbstractMongoSubFactory
         doc.put("botId", ent.getBotId());
         doc.put("log", ent.getLog().toArray());
         doc.put("date", ent.getTime().getTime());
-
+        doc.put("iteration", ent.getIteration());
+        
         if (overwrite == true) {
             coll.save(doc);
         } else {

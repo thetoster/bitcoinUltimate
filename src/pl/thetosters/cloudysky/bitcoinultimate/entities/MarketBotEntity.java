@@ -38,6 +38,7 @@ public class MarketBotEntity implements Serializable, LogicEntity{
     private double currentPLN;  //ile mamy gotówki do dyspozycji
     private double currentBTC;   //ile mamy BC do dyspozycji
     private double basePricePLN;    //bazowa cena dla operacji (ostatnia cena kupna lub sprzedały)
+    private int iteration;
     
     /**
      * @return the id
@@ -194,5 +195,18 @@ public class MarketBotEntity implements Serializable, LogicEntity{
      */
     public void setBasePricePLN(double basePricePLN) {
         this.basePricePLN = basePricePLN;
-    }    
+    }
+    /**
+     * @return the iteration
+     */
+    public int getIteration() {
+        return iteration;
+    }
+    /**
+     * @param iteration the iteration to set
+     */
+    public void setIteration(int iteration) {
+        this.iteration = iteration;
+    }  
+    
 }
