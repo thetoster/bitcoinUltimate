@@ -50,6 +50,9 @@ public class OrderAnalizer {
     public void checkState(MarketApi api, Account acc){
         try{
             List<MarketOrderEntity> list = api.getOrders();
+            for (MarketOrderEntity o : list) {
+                o.setAccountId(acc.getId());
+            }
             handleClosed(list, acc);
             for (MarketOrderEntity o : list) {
                 if (map.get( o.getOid() ) == null ){
@@ -129,9 +132,9 @@ public class OrderAnalizer {
             ent = masterHub.getEntityFactory().requestEntity(
                             MarketOrderEntity.class, MarketOrderEntity.ID, 
                             orderId);
-            if (ent != null){
-                map.put(ent.getOid(), ent);
-            }
+//            if (ent != null){
+//                map.put(ent.getOid(), ent);
+//            }
         }
         
         if (ent == null){

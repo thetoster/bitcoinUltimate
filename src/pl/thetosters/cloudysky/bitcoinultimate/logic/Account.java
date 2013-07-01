@@ -210,7 +210,7 @@ public class Account implements LogicItemsProvider, RequestExecutor{
     public void processState(Map<String, Object> globals) {
         Map<String, Object> m = new HashMap<>();
         getStatus(m);
-        System.out.println("currentPLN:"+m.get("currentPLN")+"currentBTC:"+m.get("currentBTC"));
+        System.out.println("currentPLN:"+m.get("currentPLN")+" currentBTC:"+m.get("currentBTC"));
         
         
         if (orderAnalizer == null){

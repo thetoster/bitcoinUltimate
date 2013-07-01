@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import pl.thetosters.cloudysky.bitcoinultimate.logic.items.LogicItem;
+import pl.thetosters.cloudysky.bitcoinultimate.logic.items.LogicItemStore;
 import pl.thetosters.cloudysky.bitcoinultimate.logic.stats.MarketPredictor;
 import pl.thetosters.cloudysky.server.MasterHub;
 
@@ -246,6 +247,7 @@ public class MarketBot implements RequestExecutor{
 	    params.put("executor", this);
 	    params.put("iteration", iteration);
 	    params.put("botId", id);
+	    LogicItemStore.ignoreFields = new HashSet<>( params.keySet() );
 	    try{
 	        LogicItem li = workPlan;
 	        int cnt = 0;
@@ -260,6 +262,7 @@ public class MarketBot implements RequestExecutor{
 	        }
 	    } catch(Exception e){
 	        //we don't care. Since it may be exception due to user wrong definition
+	        e.printStackTrace();
 	    }
 	}
 
@@ -315,10 +318,10 @@ public class MarketBot implements RequestExecutor{
         totalSellPLN += pricePerAmount;
         currentPLN += pricePerAmount;
         
-        if (Math.abs(currentPLN) < 1e8){
+        if (Math.abs(currentPLN) < 1e-8){
             currentPLN = 0;
         }
-        if (Math.abs(currentBTC) < 1e8){
+        if (Math.abs(currentBTC) < 1e-8){
             currentBTC = 0;
         }
         if (currentPLN < 0 || currentBTC < 0){
@@ -337,10 +340,10 @@ public class MarketBot implements RequestExecutor{
         currentPLN -= pricePerAmount;
         totalBuyPLN += pricePerAmount;
         
-        if (Math.abs(currentPLN) < 1e8){
+        if (Math.abs(currentPLN) < 1e-8){
             currentPLN = 0;
         }
-        if (Math.abs(currentBTC) < 1e8){
+        if (Math.abs(currentBTC) < 1e-8){
             currentBTC = 0;
         }
         if (currentPLN < 0 || currentBTC < 0){

@@ -30,6 +30,7 @@ public class LogicItemStore extends LogicItem{
     
     //jak true to zapisujemy wartosci do bazy, jak false to z niej odczytujemy
     private boolean storeValues;
+    public static Set<String> ignoreFields;
     
     @Override
     public void setData(String key, Object value){
@@ -53,6 +54,9 @@ public class LogicItemStore extends LogicItem{
             Map<String, Object> v = new HashMap<>();
             for(Entry<String, Object> e : params.entrySet()){
                 Object val = e.getValue();
+                if (ignoreFields.contains(e.getKey()) == true){
+                    continue;
+                }
                 if ((val instanceof Number) || (val instanceof Boolean) ||
                     (val instanceof String)){
                     v.put(e.getKey(), val);
@@ -73,6 +77,9 @@ public class LogicItemStore extends LogicItem{
                                             LogicItemStorageEntity.class, 
                                             LogicItemStorageEntity.ID, id);
             if (ent != null){
+                for(String s : ignoreFields){
+                    ent.getValues().remove(s);
+                }
                 params.putAll(ent.getValues());
             }
             addLog("[STORE] load " + (ent != null ? ent.getValues() : ""), params);

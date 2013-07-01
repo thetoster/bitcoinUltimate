@@ -65,7 +65,7 @@ public class BitcoinUltimateEntryPoint implements RealmPlugin {
 	    periodicTask = new PeriodicTimerTask(masterHub);
 	    long rep = 1000 * Integer.getInteger("bitcoinultimate.check.interval", 
 	                    600);
-	    
+//	    rep = 140;
 	    masterHub.getMaintenanceTimer().schedule(periodicTask, 1000,rep);
 	}
 	
